@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class KeyScript : MonoBehaviour
@@ -40,6 +41,7 @@ public class KeyScript : MonoBehaviour
     {
         if (other.name == "Player")
         {
+            GameState.bag.Add($"Key{keyNumber}", 1);
             GameEventSystem.EmitEvent(new GameEvent
             {
                 type = $"isKey{keyNumber}Collected",

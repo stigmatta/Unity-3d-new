@@ -28,6 +28,7 @@ public class CameraScript : MonoBehaviour
 
     private void Start()
     {
+        cameraAnchor = GameObject.Find("Player").transform;
         offset = transform.position - cameraAnchor.position;
 
         angleY = transform.eulerAngles.y;

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameState 
 {
+    public static Dictionary<string, int> bag { get; } = new Dictionary<string, int>();
     #region float effectsVolume
     private static float _effectsVolume = 0.2f;
     public static float effectsVolume

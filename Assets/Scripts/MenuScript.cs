@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class MenuScript : MonoBehaviour
 {
+    [SerializeField]
+    private Image[] bagImages;
     private GameObject content;
     private bool isMuted = false;
     private Slider effectsSlider;
@@ -47,6 +49,17 @@ public class MenuScript : MonoBehaviour
         startTimeScale = Time.timeScale;
         content.SetActive(true);
         Time.timeScale = 0;
+        for(int i = 0;i<bagImages.Length; i++)
+        {
+            if (GameState.bag.ContainsKey($"Key{i + 1}"))
+            {
+                bagImages[i].enabled = true;
+            }
+            else
+            {
+                bagImages[i].enabled = false;
+            }
+        }
     }
     private void Hide()
     {

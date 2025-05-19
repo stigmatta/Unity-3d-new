@@ -5,15 +5,45 @@ public class EffectsScript : MonoBehaviour
     private AudioSource keyCollectedInTimeSound;
     private AudioSource keyCollectedOutOfTimeSound;
     private AudioSource batteryCollectedSound;
+
+    private static EffectsScript instance; 
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject); 
+        }
+        else
+        {
+            Destroy(gameObject); 
+            return;
+        }
+
+        InitializeAudioSources();
+    }
+
     void Start()
     {
-        AudioSource[] audioSources = GetComponents<AudioSource>();
-        keyCollectedInTimeSound = audioSources[0];
-        batteryCollectedSound = audioSources[1];
-        keyCollectedOutOfTimeSound = audioSources[2];
         GameEventSystem.Subscribe(OnGameEvent);
         GameState.AddListener(OnGameStateChanged);
         OnGameStateChanged(nameof(GameState.effectsVolume));
+    }
+
+    private void InitializeAudioSources()
+    {
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+        if (audioSources.Length >= 3)
+        {
+            keyCollectedInTimeSound = audioSources[0];
+            batteryCollectedSound = audioSources[1];
+            keyCollectedOutOfTimeSound = audioSources[2];
+        }
+        else
+        {
+            Debug.LogError("EffectsScript: Not enough AudioSources attached!");
+        }
     }
 
     private void OnGameEvent(GameEvent gameEvent)
@@ -42,16 +72,19 @@ public class EffectsScript : MonoBehaviour
     {
         if (fieldName == null || fieldName == nameof(GameState.effectsVolume))
         {
-            keyCollectedInTimeSound.volume = GameState.effectsVolume;
-            batteryCollectedSound.volume = GameState.effectsVolume;
-            keyCollectedOutOfTimeSound.volume = GameState.effectsVolume;
+            float volume = GameState.effectsVolume;
+            keyCollectedInTimeSound.volume = volume;
+            batteryCollectedSound.volume = volume;
+            keyCollectedOutOfTimeSound.volume = volume;
         }
     }
 
     private void OnDestroy()
     {
-        GameEventSystem.Unsubscribe(OnGameEvent);
-        GameState.RemoveListener(OnGameStateChanged);
-
+        if (instance == this)
+        {
+            GameEventSystem.Unsubscribe(OnGameEvent);
+            GameState.RemoveListener(OnGameStateChanged);
+        }
     }
 }
